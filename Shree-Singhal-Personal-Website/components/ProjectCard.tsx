@@ -46,7 +46,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           {project.title}
         </h3>
         <p className="mt-2 line-clamp-[8] text-sm leading-relaxed text-ink-muted">
-          {project.description}
+          {project.overview}
         </p>
 
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -65,7 +65,9 @@ export default function ProjectCard({ project }: { project: Project }) {
             {hasCode && (
               <a
                 href={project.codeUrl}
-                aria-label={`${project.title} — source code`}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={`${project.title} — source code (opens in a new tab)`}
                 className="relative z-20 text-ink hover:text-accent"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -76,7 +78,9 @@ export default function ProjectCard({ project }: { project: Project }) {
             {hasLive && (
               <a
                 href={project.liveUrl}
-                aria-label={`${project.title} — ${project.liveLabel ?? 'live demo'}`}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={`${project.title} — ${project.liveLabel ?? 'live demo'} (opens in a new tab)`}
                 className="relative z-20 text-ink hover:text-accent"
                 onClick={(e) => e.stopPropagation()}
               >

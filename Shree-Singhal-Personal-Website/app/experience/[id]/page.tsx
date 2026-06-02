@@ -30,7 +30,7 @@ export default function ExperienceDetailPage({ params }: { params: Params }) {
     <>
       <Nav />
       <main>
-        <article className="mx-auto max-w-page px-6 pb-24 pt-16 md:px-8 md:pt-24">
+        <article className="mx-auto max-w-page px-6 pb-24 pt-16 md:px-24 md:pt-24">
           <Reveal>
             <a
               href="/#experience"

@@ -19,7 +19,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   const title = `${project.title} — ${site.name}`;
   return {
     title,
-    description: project.summary ?? project.description,
+    description: project.summary ?? project.overview,
   };
 }
 
@@ -38,7 +38,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
     <>
       <Nav />
       <main>
-        <article className="mx-auto px-6 pb-24 pt-16 md:px-8 md:pt-24">
+        <article className="mx-auto px-6 pb-24 pt-16 md:px-24 md:pt-24">
           <Reveal>
             <a
               href="/#projects"
@@ -77,7 +77,9 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   {hasExternalCode && (
                     <a
                       href={project.codeUrl}
-                      aria-label={`${project.title} — source code`}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`${project.title} - source code`}
                       className="text-ink hover:text-accent"
                     >
                       Code
@@ -87,6 +89,8 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   {hasExternalLive && (
                     <a
                       href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
                       aria-label={`${project.title} — ${project.liveLabel ?? 'live demo'}`}
                       className="text-ink hover:text-accent"
                     >
@@ -129,7 +133,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   Overview
                 </h2>
                 <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
-                  {project.description}
+                  {project.overview}
                 </p>
               </section>
             </Reveal>
@@ -138,12 +142,40 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
           {project.sections?.map((s, i) => (
             <Reveal key={i}>
               <section className="mt-10">
-                <h2 className="font-serif text-xl font-medium text-ink md:text-2xl">
-                  {s.heading}
-                </h2>
-                <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
-                  {s.body}
-                </p>
+                {s.image ? (
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start md:gap-8">
+                    <figure className="overflow-hidden rounded-lg ring-1 ring-rule">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={s.image}
+                        alt={s.imageAlt ?? s.heading}
+                        className="w-full"
+                      />
+                      {s.imageCaption && (
+                        <figcaption className="border-t border-rule/60 bg-bg px-4 py-2 text-xs text-ink-muted">
+                          {s.imageCaption}
+                        </figcaption>
+                      )}
+                    </figure>
+                    <div>
+                      <h2 className="font-serif text-xl font-medium text-ink md:text-2xl">
+                        {s.heading}
+                      </h2>
+                      <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
+                        {s.body}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="font-serif text-xl font-medium text-ink md:text-2xl">
+                      {s.heading}
+                    </h2>
+                    <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
+                      {s.body}
+                    </p>
+                  </>
+                )}
               </section>
             </Reveal>
           ))}

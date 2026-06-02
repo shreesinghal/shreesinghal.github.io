@@ -1,6 +1,13 @@
 export type ProjectSection = {
   heading: string;
-  body: string;
+  // Single string for a one-paragraph body, or an array of strings — each entry
+  // renders as its own paragraph on the detail page.
+  body: string | string[];
+  // Optional figure rendered beside the body. When set, the detail page lays
+  // out the section as image (left) + heading/body (right) on md+ screens.
+  image?: string;
+  imageAlt?: string;
+  imageCaption?: string;
 };
 
 export type ProjectPhoto = {
@@ -15,7 +22,7 @@ export type Project = {
   // Stable slug — used as the URL segment for the detail page at /projects/<id>/.
   id: string;
   title: string;
-  description: string;
+  overview?: string;
   tags: string[];
   // External links — omit (or leave undefined) to hide the corresponding link on
   // the project card and detail page.
@@ -47,18 +54,40 @@ export const projects: Project[] = [
   {
     id: 'renu',
     title: 'ReNU - Collegiate Wind Turbine Software + Electrical Lead',
-    description:
-      'Led a 6-person team, designing the full power and control stack: 3-phase full-wave rectifier, MPPT load control, and a closed-loop PID pitch control system driven by tachometer feedback. Regulated rotor speed across 5–15 mph wind. Placed 4th of 32 teams at the DOE Collegiate Wind Turbine Competition 2026.',
+    overview: 'Led a 6-person team, designing the full power and control stack: 3-phase full-wave rectifier, MPPT load control, and a closed-loop PID pitch control system driven by tachometer feedback. Regulated rotor speed across 5–15 mph wind. Placed 4th of 32 teams at the DOE Collegiate Wind Turbine Competition 2026.',
     tags: ['Embedded', 'PID Control', 'MPPT', 'Power Electronics', 'Team Lead'],
     image: '/projects/renu.jpg',
     imageAlt: 'ReNU wind turbine at competition.',
     summary:
-      'ReNU is Northeastern’s Sustainable Energy Club. In 2026, it competed in the U.S. Department of Energy Collegiate Wind Turbine Competition. As Software + Electrical Lead I owned the full power and control stack — rectification, MPPT load control, and closed-loop pitch control — and led a 6-person team to a 4th-place finish out of 32 schools.',
+      'ReNU is Northeastern’s Sustainable Energy Club. In 2026, it competed in the U.S. Department of Energy Collegiate Wind Turbine Competition. As Software + Electrical Lead I designed the full power and control stack including rectification, MPPT load control, and closed-loop pitch control. I led a 6-person electrical/software team, and the product placed 4th-place at the Colegiate Wind Competition 2026.',
     sections: [
       {
-        heading: 'What I worked on',
-        body:
-          'I designed the 3-phase full-wave rectifier that conditioned the generator output, the MPPT controller that continuously tuned the resistive load to maximize harvested power, and a closed-loop PID pitch control system driven by tachometer feedback that regulated rotor speed cleanly across the 5–15 mph operating window. I owned firmware, control tuning, and integration with the mechanical team.',
+        heading: 'Electrical Top-Down',
+        body: [
+          'The power stack moves the generator output through a 3-phase full-wave rectifier and into an MPPT-controlled resistive load that continuously seeks the turbine’s max-power point. Voltage, current, and tachometer-pulse sensing feed back to the MCU, which arbitrates between load tuning and pitch actuation.',
+          'For a more detailed breakdown of the parts, go to the Parts Overview section below.'
+        ],
+        image: '/projects/ReNU-Electrical-Overview-Diagram.jpg',
+        imageAlt: 'ReNU turbine electrical system overview diagram.',
+        imageCaption: 'Electrical System Overview Flowchart (made on Microsoft PPT)',
+      },
+      {
+        heading: 'Software Top-Down',
+        body: [
+          'Two cooperating control loops run on the MCU: an MPPT loop that follows the turbine’s power curve by adjusting the resistive load, and a PID pitch controller driven by tachometer feedback that holds rotor speed steady across the 5–15 mph operating window. Both loops share the same sensor pipeline and arbitration logic.'
+        ],
+        image: '/projects/ReNU-Software-Overview-Diagram.svg',
+        imageAlt: 'ReNU turbine firmware control-flow diagram.',
+        imageCaption: 'Firmware Software System Overview Flowchart (made on Miro)',
+      },
+      {
+        heading: 'Parts Overview',
+        body: [
+          'The top right shows the 3-phase full wave rectifier. This is fed to the turbine side 6V and 12V buck-boosts shown on the left half to power the onboard sensors and motors (the linear actuator, windspeed sensor, and solenoid). The originial rectified DC rail is then fed into a programmable variable buck boost on the load side.'
+        ],
+        image: '/projects/electrical-snapshots.jpg',
+        imageAlt: 'Electrical and Software Snapshots.',
+        imageCaption: 'Electrical and Software Snapshots (made on Microsoft PPT)',
       },
       {
         heading: 'What I learned',
@@ -71,7 +100,7 @@ export const projects: Project[] = [
   {
     id: 'backscatter',
     title: 'Ambient Backscatter Wireless Communication',
-    description:
+    overview:
       'PEAK Award-funded independent research on a backscatter system that modulates ambient Wi-Fi signals for passive data transmission. Designed RF filtration, a custom encoding/decoding protocol, and a custom antenna. Mentored by Dr. Stefano Basagni and featured in the NU COE Spotlight.',
     tags: ['RF', 'Wireless', 'Antenna Design', 'Research'],
     image: '/projects/backscatter.jpg',
@@ -98,11 +127,12 @@ export const projects: Project[] = [
   {
     id: 'drone-laser',
     title: 'Drone Tracking In-Air Laser Charging Capstone',
-    description:
+    overview:
       'Three-layer computer vision pipeline combining GroundingDINO bounding boxes, segmentation masks, and CoTracker3 point tracking to keep focus on an onboard photodiode target. Drives a closed-loop PID turret actuation system that aligns laser placement with live tracking coordinates.',
     tags: ['Computer Vision', 'GroundingDINO', 'CoTracker3', 'PID', 'Capstone'],
     image: '/projects/drone-laser.jpg',
     imageAlt: 'Drone tracking + laser turret capstone rig.',
+    codeUrl: 'https://github.com/RyderPaulson/PANDAS-Drone-Tracking',
     summary:
       'A vision-guided turret that tracks a drone in flight and keeps a laser pointed at an onboard photodiode for wireless power transfer. The system fuses three CV models with a closed-loop PID actuator to maintain alignment in real time.',
     sections: [
@@ -122,7 +152,7 @@ export const projects: Project[] = [
   {
     id: 'mitosis',
     title: 'Project Mitosis — 3D-Printed Delta 3D Printer',
-    description:
+    overview:
       'NURobotics project building a delta 3D printer from scratch. Designed and software-tested a CadLab PCB that interfaces an STM32 with stepper motor drivers, and wrote C++ firmware that synchronizes three steppers to execute parallel kinematic motion.',
     tags: ['STM32', 'C++ Firmware', 'PCB Design', 'Robotics'],
     image: '/projects/mitosis.jpg',
@@ -146,11 +176,12 @@ export const projects: Project[] = [
   {
     id: 'market-making',
     title: 'DQN vs Q-Learning Market Making Agent',
-    description:
+    overview:
       'Designed and trained two RL agents (tabular Q-Learning and Double DQN) to act as market makers in a custom trading environment. Engineered a reward function balancing profit against inventory risk over a 25-action bid/ask offset space. DQN delivered ~4× higher profit (680.71 vs 169.77) at ~20× the compute cost, quantifying the tabular-vs-deep-RL tradeoff.',
     tags: ['Reinforcement Learning', 'DQN', 'Python', 'Quant'],
     image: '/projects/market-making.jpg',
     imageAlt: 'DQN vs tabular Q-learning training curves.',
+    codeUrl: 'https://github.com/shreesinghal/AI-Market-Maker-Reinforcement-Learning',
     summary:
       'A head-to-head comparison of tabular Q-Learning and Double DQN as market-making agents inside a custom trading environment. The goal was to measure — concretely — what the move from tabular RL to deep RL actually buys you, and at what compute cost.',
     sections: [
@@ -169,8 +200,8 @@ export const projects: Project[] = [
   },
   {
     id: 'hpc-fft',
-    title: 'Literature Review: Literature_Review_on_FFT_in_HPC',
-    description:
+    title: 'Literature Review: Progression of the Use of High-Performance Computing for Fast Fourier Transforms from 2005-2025',
+    overview:
       'Surveyed and synthesized 12 research papers spanning 2005–2025 to trace ' +
       'how Fast Fourier Transform implementations have evolved alongside HPC hardware.',
     tags: ['HPC', 'FFT', 'Literature Review', 'Research'],
@@ -195,7 +226,7 @@ export const projects: Project[] = [
   {
     id: 'embedded-systems',
     title: 'Embedded Design — FUSE FS & RISC-V Datapath',
-    description:
+    overview:
       'Two systems-level projects: a Unix-style FUSE file system in C++ with block-storage architecture, nested directories, bitmap resource tracking, and file I/O syscall handling; and a full CPU datapath implemented in SystemVerilog/Verilog using both RISC-V and MIPS instruction sets.',
     tags: ['C++', 'SystemVerilog', 'RISC-V', 'MIPS', 'Operating Systems'],
     image: '/projects/riscv.jpg',
