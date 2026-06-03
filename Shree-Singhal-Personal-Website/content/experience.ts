@@ -17,6 +17,10 @@ export type Experience = {
   company: string;
   dates: string;
   location?: string;
+  // Path under /public with a leading slash, e.g. '/logos/MITRElogo.png'.
+  // When set, the company logo replaces the empty placeholder square in the
+  // experience list. Falls back to the placeholder when omitted.
+  logo?: string;
   bullets: string[];
   // Detail-page content — used by app/experience/[id]/page.tsx.
   summary?: string;
@@ -24,9 +28,8 @@ export type Experience = {
   photos?: ExperiencePhoto[];
 };
 
-// `id` is stable — it is referenced from content/timeline.ts so each timeline
-// bar can scroll to its matching experience entry, and it is also used as the
-// URL slug for the per-experience detail page at /experience/<id>/.
+// `id` is used as the URL slug for the per-experience detail page at
+// /experience/<id>/.
 export const experience: Experience[] = [
   {
     id: 'mitre',
@@ -34,6 +37,7 @@ export const experience: Experience[] = [
     company: 'MITRE',
     dates: 'Jan 2025 – Jun 2025',
     location: 'Burlington, MA',
+    logo: '/logos/MITRElogo.png',
     bullets: [
       'Served as primary software engineer and project POC for a Python-based whale detection model, synthesizing complex climate, aerial survey, and behavioral datasets (NetCDF, JSON, GRIB).',
       'Directed technical outreach with SMEs in oceanography, data science, and marine biology to procure validated data and refine model architecture, translating research papers into a reliable model.',
@@ -65,6 +69,7 @@ export const experience: Experience[] = [
     company: 'ASMPT SEMI',
     dates: 'Jan 2024 – Jun 2024',
     location: 'Billerica, MA',
+    logo: '/logos/ASMPTSEMIogo.png',
     bullets: [
       'Architected a hardware-in-the-loop (HIL) diagnostic module for the Stratus P300 Wafer Plating machine to eliminate false alarms, validating chemical-composition sensor behavior against live machine hardware in real time.',
       'Re-engineered alarm logic to provide real-time feedback on chemical reservoir discrepancies, directly addressing client-reported issues.',
@@ -94,6 +99,7 @@ export const experience: Experience[] = [
     role: 'Teaching Assistant — Fundamentals of Computer Science',
     company: 'Northeastern Khoury College',
     dates: 'Apr 2023 – Dec 2023',
+    logo: '/logos/Khourylogo.jpg',
     location: 'Boston, MA',
     bullets: [
       'Led, taught, and graded labs of 30+ students in Kotlin (self-taught for the role) and DrRacket.',

@@ -27,9 +27,8 @@ All editable copy lives in [`content/`](./content):
 | -------------------------- | ----------------------------------------------------------- |
 | `content/site.ts`          | Name, tagline, contact email, social URLs, bio paragraphs, meta tags |
 | `content/projects.ts`      | Project cards in the Projects section                        |
-| `content/experience.ts`    | Experience entries (the `id` field is used by the Timeline)  |
+| `content/experience.ts`    | Experience entries                                           |
 | `content/skills.ts`        | Skills grouped by category                                   |
-| `content/timeline.ts`      | Timeline rows; set `experienceId` to link to an Experience entry |
 
 Each file has a `// TODO: replace ...` comment marking the placeholder content.
 
@@ -39,7 +38,6 @@ Each file has a `// TODO: replace ...` comment marking the placeholder content.
 - Real project entries with Code / Live URLs (`content/projects.ts`); screenshots can be dropped into each card's image well later
 - Real experience entries (`content/experience.ts`); optional company logos for the reserved logo slot
 - Real skill names per group (`content/skills.ts`) — see `CLAUDE_CODE_PROMPT.md` for suggested defaults
-- Real timeline rows (`content/timeline.ts`)
 - GitHub URL (`content/site.ts` → `socials.github`)
 - LinkedIn URL (`content/site.ts` → `socials.linkedin`)
 - Optional portrait photos for the reserved photo slots in `components/Home.tsx` and `components/About.tsx`
