@@ -1,11 +1,73 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import katex from 'katex';
 import Nav from '@/components/Nav';
 import Contact from '@/components/Contact';
 import Reveal from '@/components/Reveal';
 import PaperViewer from '@/components/PaperViewer';
-import { projects, getProjectById } from '@/content/projects';
+import Slideshow from '@/components/Slideshow';
+import { projects, getProjectById, type ProjectBodyBlock } from '@/content/projects';
 import { site } from '@/content/site';
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function SectionBody({ body }: { body: string | ProjectBodyBlock[] }) {
+  const blocks = Array.isArray(body) ? body : [body];
+  return (
+    <div className="mt-3 space-y-4 font-serif text-[1.05rem] leading-relaxed text-ink">
+      {blocks.map((block, j) => {
+        if (typeof block === 'string') {
+          return <p key={j}>{block}</p>;
+        }
+        if ('math' in block) {
+          const html = katex.renderToString(block.math, {
+            displayMode: true,
+            throwOnError: false,
+            output: 'html',
+          });
+          return (
+            <div
+              key={j}
+              className="overflow-x-auto py-1 text-ink"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
+          );
+        }
+        return (
+          <figure key={j} className="my-2">
+            <div
+              className="overflow-hidden rounded-lg ring-1 ring-rule"
+              style={{ height: '80vh' }}
+            >
+              <iframe
+                src={`${block.pdf}#view=FitH&toolbar=1&navpanes=0`}
+                title={block.caption ?? 'Embedded PDF'}
+                className="h-full w-full"
+              />
+            </div>
+            <figcaption className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-muted">
+              <span>{block.caption}</span>
+              <a
+                href={block.pdf}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="font-medium text-ink transition-colors hover:text-accent"
+              >
+                Open PDF in a new tab
+                <span aria-hidden="true" className="ml-1">↗</span>
+              </a>
+            </figcaption>
+          </figure>
+        );
+      })}
+    </div>
+  );
+}
 
 type Params = { id: string };
 
@@ -33,6 +95,24 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
   const hasBodyContent = Boolean(
     project.summary || (project.sections && project.sections.length > 0),
   );
+  const hasPhotos = Boolean(project.photos && project.photos.length > 0);
+  const hasSlideshow = Boolean(project.slideshow && project.slideshow.length > 0);
+
+  const toc: { id: string; label: string }[] = [];
+  if (hasBodyContent) toc.push({ id: 'proj-overview', label: 'Overview' });
+  project.sections?.forEach((s) => {
+    if (s.heading && s.heading.trim()) {
+      toc.push({ id: slugify(s.heading), label: s.heading });
+    }
+  });
+  if (hasPaper) toc.push({ id: 'proj-paper', label: project.paperLabel ?? 'Paper' });
+  if (hasPhotos) toc.push({ id: 'proj-photos', label: 'Photos' });
+  if (hasSlideshow) {
+    toc.push({
+      id: 'proj-slideshow',
+      label: project.slideshowHeading ?? 'Gallery',
+    });
+  }
 
   return (
     <>
@@ -112,6 +192,34 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   )}
                 </div>
               )}
+
+              {toc.length > 1 && (
+                <nav
+                  aria-label="On this page"
+                  className="mt-5 text-xs text-ink-muted"
+                >
+                  <ul className="flex flex-wrap items-center">
+                    <li className="mr-3 font-medium uppercase tracking-[0.2em]">
+                      On this page
+                    </li>
+                    {toc.map((item, idx) => (
+                      <li key={item.id} className="flex items-center">
+                        {idx > 0 && (
+                          <span aria-hidden="true" className="mx-2 text-rule">
+                            ·
+                          </span>
+                        )}
+                        <a
+                          href={`#${item.id}`}
+                          className="transition-colors hover:text-accent"
+                        >
+                          {item.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              )}
             </header>
           </Reveal>
 
@@ -125,7 +233,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
 
           {hasBodyContent && (
             <Reveal>
-              <section className="mt-10" aria-labelledby="proj-overview">
+              <section className="mt-10 scroll-mt-24" aria-labelledby="proj-overview">
                 <h2
                   id="proj-overview"
                   className="font-serif text-xl font-medium text-ink md:text-2xl"
@@ -141,7 +249,10 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
 
           {project.sections?.map((s, i) => (
             <Reveal key={i}>
-              <section className="mt-10">
+              <section
+                className="mt-10 scroll-mt-24"
+                id={s.heading && s.heading.trim() ? slugify(s.heading) : undefined}
+              >
                 {s.image ? (
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-start md:gap-8">
                     <figure className="overflow-hidden rounded-lg ring-1 ring-rule">
@@ -161,9 +272,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                       <h2 className="font-serif text-xl font-medium text-ink md:text-2xl">
                         {s.heading}
                       </h2>
-                      <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
-                        {s.body}
-                      </p>
+                      <SectionBody body={s.body} />
                     </div>
                   </div>
                 ) : (
@@ -171,9 +280,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                     <h2 className="font-serif text-xl font-medium text-ink md:text-2xl">
                       {s.heading}
                     </h2>
-                    <p className="mt-3 font-serif text-[1.05rem] leading-relaxed text-ink">
-                      {s.body}
-                    </p>
+                    <SectionBody body={s.body} />
                   </>
                 )}
               </section>
@@ -182,13 +289,35 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
 
           {project.paperPdf && (
             <Reveal>
-              <PaperViewer src={project.paperPdf} title={project.title} />
+              <div id="proj-paper" className="scroll-mt-24">
+                <PaperViewer src={project.paperPdf} title={project.title} />
+              </div>
+            </Reveal>
+          )}
+
+          {hasSlideshow && (
+            <Reveal>
+              <section
+                id="proj-slideshow"
+                className="mt-12 scroll-mt-24"
+                aria-labelledby="proj-slideshow-heading"
+              >
+                <h2
+                  id="proj-slideshow-heading"
+                  className="font-serif text-xl font-medium text-ink md:text-2xl"
+                >
+                  {project.slideshowHeading ?? 'Gallery'}
+                </h2>
+                <div className="mt-5">
+                  <Slideshow images={project.slideshow!} />
+                </div>
+              </section>
             </Reveal>
           )}
 
           {project.photos && project.photos.length > 0 && (
             <Reveal>
-              <section className="mt-12" aria-labelledby="proj-photos">
+              <section className="mt-12 scroll-mt-24" aria-labelledby="proj-photos">
                 <h2
                   id="proj-photos"
                   className="font-serif text-xl font-medium text-ink md:text-2xl"

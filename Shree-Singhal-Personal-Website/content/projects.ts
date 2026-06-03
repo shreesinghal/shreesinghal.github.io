@@ -1,8 +1,15 @@
+// A single block in a section body. Strings render as a paragraph; objects
+// with a `math` field render as a centered block formula (LaTeX via KaTeX).
+export type ProjectBodyBlock =
+  | string
+  | { math: string }
+  | { pdf: string; caption?: string };
+
 export type ProjectSection = {
   heading: string;
-  // Single string for a one-paragraph body, or an array of strings — each entry
-  // renders as its own paragraph on the detail page.
-  body: string | string[];
+  // Single string for a one-paragraph body, or an array of blocks — each entry
+  // renders as either a paragraph (string) or a block math formula ({ math }).
+  body: string | ProjectBodyBlock[];
   // Optional figure rendered beside the body. When set, the detail page lays
   // out the section as image (left) + heading/body (right) on md+ screens.
   image?: string;
@@ -48,6 +55,12 @@ export type Project = {
   paperPdf?: string;
   // Optional override for the paper link label (defaults to 'Paper').
   paperLabel?: string;
+  // Slideshow rendered at the bottom of the detail page. Each entry needs a
+  // src (under /public); alt is required for accessibility; caption is shown
+  // below the image when present.
+  slideshow?: { src: string; alt: string; caption?: string }[];
+  // Optional heading for the slideshow section (defaults to 'Gallery').
+  slideshowHeading?: string;
 };
 
 export const projects: Project[] = [
@@ -59,7 +72,7 @@ export const projects: Project[] = [
     image: '/projects/renu.jpg',
     imageAlt: 'ReNU wind turbine at competition.',
     summary:
-      'ReNU is Northeastern’s Sustainable Energy Club. In 2026, it competed in the U.S. Department of Energy Collegiate Wind Turbine Competition. As Software + Electrical Lead I designed the full power and control stack including rectification, MPPT load control, and closed-loop pitch control. I led a 6-person electrical/software team, and the product placed 4th-place at the Colegiate Wind Competition 2026.',
+      'ReNU is Northeastern’s Sustainable Energy Club. In 2026, it competed in the U.S. Department of Energy Collegiate Wind Turbine Competition. As Software + Electrical Lead I designed the full power and control stack including rectification, MPPT load control, and closed-loop pitch control. I led a 6-person electrical/software team, and the product placed 4th-place at the Colegiate Wind Competition 2026. I made all schematics and diagrams on this website.',
     sections: [
       {
         heading: 'Electrical Top-Down',
@@ -83,19 +96,64 @@ export const projects: Project[] = [
       {
         heading: 'Parts Overview',
         body: [
-          'The top right shows the 3-phase full wave rectifier. This is fed to the turbine side 6V and 12V buck-boosts shown on the left half to power the onboard sensors and motors (the linear actuator, windspeed sensor, and solenoid). The originial rectified DC rail is then fed into a programmable variable buck boost on the load side.'
+          'The top right shows the 3-phase full wave rectifier that turns the generator AC output into DC. This is fed to the turbine side 6V and 12V buck-boosts shown on the left half to power the onboard sensors and motors (the linear actuator, windspeed sensor, and solenoid). The originial rectified DC rail is then fed into a programmable variable buck boost (on the bottom right) on the load side. ',
+          'These are the primary components of the electrical system, apart from smaller voltage and current sensors and an ESP32 microcontroller that controls the entire system. Refer to the previous Electrical Top-Down section for details on placement of the components in the overall system.'
         ],
         image: '/projects/electrical-snapshots.jpg',
         imageAlt: 'Electrical and Software Snapshots.',
         imageCaption: 'Electrical and Software Snapshots (made on Microsoft PPT)',
       },
       {
-        heading: 'What I learned',
-        body:
-          'Tuning a real PID loop in front of a wind tunnel is very different from simulating one. The biggest lessons were about disturbance rejection, sensor noise, and how much of a control system’s reliability comes from the boring parts — clean wiring, debounced signals, and conservative gains that don’t fight the mechanics.',
+        heading: 'More on Power Control System',
+        body: [
+          'As shown below, on the input end of the buck-boost is the rectified DC rail and on the output end is a 100W rated resistor. Even though there is a fixed resistance at the output end of the buck-boost, by altering the duty cycle of the switching transistor of the buck-boost through software, and thereby altering its output voltage, we can alter the effective load impedance presented to the generator. This allows us to control the power generated to either the maximum power point or a controlled operating point.',
+          'By altering the buck-boost output voltage across the fixed resistor, we change the output current (I_out = V_out / R_load), which changes the output power (P_out = V_out^2 / R_load). Since power must be conserved through the converter (P_in ≈ P_out), changing P_out forces a corresponding change in input current drawn from the rectified DC rail. Since power is conserved, the effective load resistance can be calculated as:',
+          { math: ' P_{in} \\cdot \\eta = P_{out}, P_{out} = \\frac{V_{out}^2}{R_{load}},         P_{in} = V_{in} \\cdot I_{in},         R_{\\text{eff}} = \\frac{V_{in}}{I_{in}}' },
+          { math: 'R_{\\text{eff}} = \\frac{V_{in}^{2} \\cdot \\eta}{V_{out}^{2} / R_{load}}'},
+          'Maximum Power Point Tracking (MPPT) Mode:',
+          'Since the generator has internal impedance, its output power vs. load curve has a peak, known as the maximum power point, at a specific R_eff. By sweeping V_out and measuring rectified V_in and I_in, you find the V_out setpoint that maximizes generator power output. In this way, the buck-boost maximizes the power extracted from the wind. The software details are in the Software Top-Down section above.',
+          'Maintain Constant Power Mode:',
+          'Since the generator has internal impedance, its output power vs. load curve has a peak, known as the maximum power point, at a specific R_eff. By sweeping V_out and measuring rectified V_in and I_in, you find the V_out setpoint that maximizes generator power output. In this way, the buck-boost maximizes the power extracted from the wind.'
+        ]
+      },
+      {
+        image: '/projects/LoadSystem.jpg',
+        imageCaption: 'Load System Diagram (made on Microsoft PPT)',
+        heading: "",
+        body: ""
+      },      
+      {
+        heading: 'KiCAD Schematic',
+        body: [
+          {
+            pdf: '/projects/ReNUControlsSystemLayoutPrintout.pdf',
+            caption: 'Full Control/Power System Schematic (made on KiCAD)',
+          },
+        ],
+      },
+      {
+        heading: 'What I learned being ReNU\'s Software/Electrical Technical Lead',
+        body: [
+          'For this project, I collaborated with electrical, computer, and software engineers to design and implement the control and power systems for the wind turbine. Having a background in both electrical and software engineering allowed me to bridge the gap between the two domains and allowed me to devise the system architecture. Additionally, I learned a lot on leading a team. Once the top-down schematics were loosly completed, I assigned tasks to team members based on their expertise. For example, many EECE engineers were put on the load design and component research, CE majors were assigned to interface the microcontroller with the TPS55288 module and windspeed sensor, and CS majors were assigned to develop the control algorithms such as MPPT and PID.',
+          'Additionally, I worked across teams, communicating heavily with the Mechanical Engineers, Physics Majors, and Data Scientists. For example, the E-Stop required opinions from both electrical and mechanical perspectives, the sensor and motor placement was crucial to both the structural team and software team, and choosing which generator to use required physics knowledge and electrical engineering expertise that many multi-disceplinary teams contributed to.',
+          'One difficult aspect was ensuring proper integration of all subsystems. Often, the development timelines did not align, requiring teams to simulate and test their components in isolation before integrating them. Tools like LTSpice were crucial in simulating the behavior of the system under various conditions, even if we could not replicate the exact same environment yet.',
+          'Tuning a PID loop in front of a wind tunnel is very different from simulating one. The biggest lessons were about disturbance rejection, sensor noise, and how much of a control system\'s reliability comes from clean wiring, debounced signals, and conservative gains',
+        ]
       },
     ],
     photos: [],
+    slideshowHeading: 'Competition Photos',
+    slideshow: [
+      { src: '/projects/CompPics/CompVid1.mp4', alt: 'Highlight video from the DOE Collegiate Wind Competition.' },
+      { src: '/projects/CompPics/CompPic1.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (1).' },
+      { src: '/projects/CompPics/CompPic5.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (5).' },
+      { src: '/projects/CompPics/CompPic2.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (2).' },
+      { src: '/projects/CompPics/CompPic3.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (3).' },
+      { src: '/projects/CompPics/CompPic4.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (4).' },
+      { src: '/projects/CompPics/CompPic6.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (6).' },
+      { src: '/projects/CompPics/CompPic7.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (7).' },
+      { src: '/projects/CompPics/CompPic8.jpg', alt: 'ReNU at the DOE Collegiate Wind Competition (8).' },
+    ],
   },
   {
     id: 'backscatter',

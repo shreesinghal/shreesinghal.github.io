@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Spectral, Inter } from 'next/font/google';
 import { site } from '@/content/site';
+import 'katex/dist/katex.min.css';
 import './globals.css';
 
 const spectral = Spectral({
