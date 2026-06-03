@@ -71,6 +71,7 @@ export const projects: Project[] = [
     tags: ['Embedded', 'PID Control', 'MPPT', 'Power Electronics', 'Team Lead'],
     image: '/projects/renu.jpg',
     imageAlt: 'ReNU wind turbine at competition.',
+    codeUrl: 'https://github.com/shreesinghal/windmill-control-systems',
     summary:
       'ReNU is Northeastern’s Sustainable Energy Club. In 2026, it competed in the U.S. Department of Energy Collegiate Wind Turbine Competition. As Software + Electrical Lead I designed the full power and control stack including rectification, MPPT load control, and closed-loop pitch control. I led a 6-person electrical/software team, and the product placed 4th-place at the Colegiate Wind Competition 2026. I made all schematics and diagrams on this website.',
     sections: [
