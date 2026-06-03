@@ -170,14 +170,13 @@ export const projects: Project[] = [
       'Independent research, funded by the Northeastern PEAK Award and mentored by Dr. Stefano Basagni, exploring whether ambient Wi-Fi signals can be re-modulated to transmit data without an active radio. The work was featured in the Northeastern College of Engineering Spotlight.',
     sections: [
       {
-        heading: 'What I worked on',
+        heading: 'Paper Contents',
         body:
-          'I designed the RF filtration front-end, a custom antenna geometry for the 2.4 GHz band, and a lightweight encoding/decoding protocol so a receiver could recover bits from the reflected signal. The system runs without an active transmitter on the tag side — power comes from harvested ambient energy.',
-      },
-      {
-        heading: 'What I learned',
-        body:
-          'Backscatter forces you to confront how noisy the real RF environment is. I came away with much sharper instincts for analog front-end design, signal integrity, and the gap between “works on the bench” and “works near a microwave.”',
+          [
+            'Pages 1-4: Introduce and Explain Ambient Backscatter and Previous Papers on the Matter',
+            'Pages 5-6: Limitations of Current Large-Scale Air-Quality Monitoring Systems',
+            'Pages 6-9: Experiement Design, Results, and Discussion of AmbientSense'
+          ]
       },
     ],
     photos: [],
