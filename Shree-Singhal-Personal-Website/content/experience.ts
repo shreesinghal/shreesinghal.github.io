@@ -63,7 +63,7 @@ export const experience: Experience[] = [
     id: 'asmpt',
     role: 'Software Engineering Co-op',
     company: 'ASMPT SEMI',
-    dates: 'Jan 2024 – Jun 2024',
+    dates: 'Jan 2024 - Jun 2024',
     location: 'Billerica, MA',
     logo: '/logos/ASMPTSEMIogo.png',
     bullets: [
@@ -86,8 +86,7 @@ export const experience: Experience[] = [
       },
     ],
     photos: [
-      { alt: 'Stratus P300 wafer plating machine', caption: 'Stratus P300 — the target hardware.' },
-      { alt: 'WPF diagnostic interface', caption: 'Modernized WPF simulator interface.' },
+      { alt: 'Stratus P300 wafer plating machine', caption: 'Stratus P300 (the target hardware).', src: '/experience/ASMPT-Stratusp300.jpg' },
     ],
   },
   {
@@ -112,11 +111,11 @@ export const experience: Experience[] = [
       {
         heading: 'What I learned',
         body:
-          'Teaching forced me to articulate ideas precisely. If a student couldn’t follow my explanation, my own model wasn’t tight enough yet. I also picked up Kotlin on a tight schedule, which made me more comfortable with the idea of being thrown into an unfamiliar stack and shipping anyway.',
+          'Hosting office hours espeically taught me to articulate ideas precisely. If a student couldn’t follow my explanation, I had to find a new way to convey it. I also picked up Kotlin on a tight schedule, which made me more comfortable with learning new languages and frameworks quickly. I also regularly contributed to the weekly TA meetings, where the professor implemented our feedback on the course structure and content, which was a great opportunity to see how courses evolve behind the scenes and to advocate for students.',
       },
     ],
     photos: [
-      { alt: 'Classroom at Northeastern Khoury College', caption: 'Khoury College — Boston, MA.' },
+      { alt: 'Northeastern Khoury College', caption: 'Khoury College of Computing Sciences at Boston, MA.', src: '/experience/Khoury.jpg' },
     ],
   },
 ];
