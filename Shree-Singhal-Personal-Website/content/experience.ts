@@ -33,34 +33,30 @@ export type Experience = {
 export const experience: Experience[] = [
   {
     id: 'mitre',
-    role: 'ML & Embedded Systems Co-op',
+    role: 'Computer Engineering and Computer Science Co-op',
     company: 'MITRE',
-    dates: 'Jan 2025 – Jun 2025',
-    location: 'Burlington, MA',
+    dates: 'Jan 2025 - Jun 2025',
+    location: 'Bedford, MA',
     logo: '/logos/MITRElogo.png',
     bullets: [
-      'Served as primary software engineer and project POC for a Python-based whale detection model, synthesizing complex climate, aerial survey, and behavioral datasets (NetCDF, JSON, GRIB).',
+      'Served as primary software engineer for a Python-based whale detection model, synthesizing complex climate, aerial survey, and behavioral datasets (NetCDF, JSON, GRIB).',
       'Directed technical outreach with SMEs in oceanography, data science, and marine biology to procure validated data and refine model architecture, translating research papers into a reliable model.',
-      'Leveraged High-Performance Computing (HPC) to execute large-scale bootstrapping and sensitivity analysis, quantifying the impact of every environmental covariate on the model.',
-      'Engineered a power management PCB with integrated voltage regulation and a multiplexer-driven 3-way switch.',
-    ],
+      'Leveraged High-Performance Computing (HPC) to execute large-scale bootstrapping and sensitivity analysis, quantifying the impact of every environmental covariate on the model.',    ],
     summary:
-      'At MITRE I led the ML and embedded work behind a whale detection model intended to support marine conservation efforts. The project sat at the intersection of climate data, biology, and large-scale compute, and required bridging research literature with practical engineering.',
+      'At MITRE I worked in the underwater department. My primary project was for NOAA (the National Oceanic and Atmospheric Administration); they needed to identify what conservation efforts for North Atlantic Right Whales to invest in. I worked on the Aeiral subteam (tactic where whales are counted in the ocean from an aircraft) in a SCRUM workflow, where I simulated the efficiency of aerial surveys.',
     sections: [
       {
         heading: 'What I worked on',
         body:
-          'I built the Python model end to end — ingesting heterogeneous oceanographic datasets (NetCDF, GRIB, JSON), fusing them with aerial survey and behavioral records, and training a detector that could flag whale presence under varying environmental conditions. To make the results trustworthy I ran large-scale bootstrapping and sensitivity analyses on HPC clusters, isolating the contribution of every covariate. Alongside the modeling work, I designed a power management PCB with voltage regulation and a multiplexer-driven 3-way switch for a related embedded subsystem.',
+          'I developed a Python whale detection model. The model takes heterogeneous oceanographic/weather datasets and past aerial survey/behavioral records. The script generated a map of the east coast, with detected and non-detected whales flagged under varying environmental conditions. To make the results trustworthy I ran large-scale bootstrapping and sensitivity analyses to ultimately go on HPC clusters, isolating the contribution of every covariate.',
       },
       {
         heading: 'What I learned',
-        body:
-          'The most valuable lesson was how to talk to domain experts — oceanographers, data scientists, marine biologists — and translate their language into model assumptions and engineering constraints. Technically I came away with a much sharper intuition for HPC workflow design (Slurm scheduling, parallel sweeps) and for how to defend a model with sensitivity analysis rather than headline metrics alone.',
+        body: 'The most valuable lesson was how to talk to and learn from domain experts - oceanographers, data scientists, marine biologists - and translate their findings, datasets, and expertise into the model I am developing. This project had about 20-30 people involved, with my subteam being about 3-5 people. I also learned how to give bi-weekly SCRUM stand-ups to the leaders and bi-weekly more complete updates at the whole team meetings.',
       },
     ],
     photos: [
-      { alt: 'MITRE Burlington campus', caption: 'MITRE — Burlington, MA.' },
-      { alt: 'HPC job output from the whale detection sensitivity sweep', caption: 'HPC sensitivity sweep across environmental covariates.' },
+      { alt: 'MITRE Bedford campus', caption: 'MITRE at Bedford, MA.', src: '/experience/MITREbedford.jpg' },
     ],
   },
   {
